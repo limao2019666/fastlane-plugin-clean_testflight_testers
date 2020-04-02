@@ -23,28 +23,31 @@ module Fastlane
 
         all_testers.each do |current_tester|
           tester_metrics = current_tester.beta_tester_metrics.first
+          UI.message("current tester: #{current_tester.first_name}, #{current_tester.last_name}, #{current_tester.email}, #{current_tester.invite_type}, #{current_tester.invitation}, 
+            #{current_tester.apps}, #{current_tester.beta_groups}, #{current_tester.beta_tester_metrics},
+          ")
 
           time = Time.parse(tester_metrics.last_modified_date)
           days_since_status_change = (Time.now - time) / 60.0 / 60.0 / 24.0
 
-          if tester_metrics.beta_tester_state == "INVITED"
+          # if tester_metrics.beta_tester_state == "INSTALLED"
             if days_since_status_change > params[:days_of_inactivity]
               remove_tester(current_tester, spaceship_app, params[:dry_run]) # user got invited, but never installed a build... why would you do that?
               counter += 1
             end
-          else
+          # else
             # We don't really have a good way to detect whether the user is active unfortunately
             # So we can just delete users that had no sessions
-            if days_since_status_change > params[:days_of_inactivity] && tester_metrics.session_count == 0
+            # if days_since_status_change > params[:days_of_inactivity] && tester_metrics.session_count == 0
               # User had no sessions in the last e.g. 30 days, let's get rid of them
-              remove_tester(current_tester, spaceship_app, params[:dry_run])
-              counter += 1
-            elsif params[:oldest_build_allowed] && tester_metrics.installed_cf_bundle_short_version_string.to_i > 0 && tester_metrics.installed_cf_bundle_short_version_string.to_i < params[:oldest_build_allowed]
-              # User has a build that is too old, let's get rid of them
-              remove_tester(current_tester, spaceship_app, params[:dry_run])
-              counter += 1
-            end
-          end
+              # remove_tester(current_tester, spaceship_app, params[:dry_run])
+              # counter += 1
+            # elsif params[:oldest_build_allowed] && tester_metrics.installed_cf_bundle_short_version_string.to_i > 0 && tester_metrics.installed_cf_bundle_short_version_string.to_i < params[:oldest_build_allowed]
+            #   # User has a build that is too old, let's get rid of them
+            #   remove_tester(current_tester, spaceship_app, params[:dry_run])
+            #   counter += 1
+            # end
+          # end
         end
 
         if params[:dry_run]
