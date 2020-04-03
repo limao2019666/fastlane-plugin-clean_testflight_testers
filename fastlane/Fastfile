@@ -1,3 +1,3 @@
 lane :clean do
-  clean_testflight_testers(days_of_inactivity: 1)
+  clean_testflight_testers(hours_of_inactivity: 1)
 end
