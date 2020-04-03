@@ -31,7 +31,7 @@ end
 
 # Specify a custom number for what's "inactive"
 lane :clean do
-  clean_testflight_testers(days_of_inactivity: 120) # 120 days, so about 4 months
+  clean_testflight_testers(hours_of_inactivity: 120) # 120 days, so about 4 months
 end
 
 # Provide custom app identifier / username
